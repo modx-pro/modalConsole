@@ -1,0 +1,86 @@
+#modalconsole-window {
+	left: auto !important;
+	top: 55px !important;
+	-webkit-transition: right 0.7s ease-out 0s;
+	-moz-transition: right 0.7s ease-out 0s;
+	-o-transition: right 0.7s ease-out 0s;
+	transition: right 0.7s ease-out 0s;
+	opacity: 0.5;
+	z-index: 18 !important;
+}
+#modalconsole-window.visible {
+	right: 0 !important;
+}
+#modalconsole-window .x-window-body {
+	padding: 0;
+	overflow: hidden;
+}
+#modalconsole-window .x-window-header {
+	background-color: #19597b;
+	color: #fff;
+}
+#modalconsole-window .x-window-header .x-tool {
+	color: #fff;
+}
+#modalconsole-link {
+	padding: 0 !important;
+	margin: 0 20px !important;
+}
+#modalconsole-link i {
+	border-top: 3px solid;
+	outline: 1px solid #fff;
+	padding: 0 3px;
+	position: relative;
+	top: 2px;
+}
+#modalconsole-window .x-toolbar-cell {
+	position: relative;
+}
+#modalconsole-window .toolbar-btn {
+	padding: 7px;
+	margin: 0;
+	border-radius: unset;
+	width: 18px !important;
+}
+#modalconsole-window .profile-item {
+	background-color: #E0E0E0;
+	padding: 15px;
+	margin-right: 10px;
+	font-weight: bold;
+}
+#modalconsole-code > div > .x-panel-body {
+	height: inherit;
+	overflow: auto;
+}
+#modalconsole-result {
+	box-sizing: border-box;
+	padding: 5px;
+	overflow: auto;
+}
+#modalconsole-editor {
+	box-sizing: border-box;
+	width: inherit !important;
+}
+.modalconsole-exec-btn {
+	background-color: #247c6f;
+	background-image: linear-gradient(#247c6f, #005753);
+	color: #fff;
+}
+.modalconsole-exec-btn:hover,
+.modalconsole-exec-btn:active {
+	background-color: #3697cd;
+	background-image: linear-gradient(#3697cd, #2D618E);
+	box-shadow: 0 0 0 1px #3697cd;
+	color: #fff;
+}
+.modalconsole-exec-btn button{
+	width: 200px;
+
+}
+#modalconsole-save-code + .x-form-cb-label::before {
+	top: -8px;
+	left: -20px;
+}
+#modalconsole-save-code + .x-form-cb-label {
+	margin-left: 35px;
+}
