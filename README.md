@@ -10,4 +10,4 @@ To disable the request history uncheck the "Save the code" checkbox or set 0 in 
 - modalconsole_cssUrl - Enter css file URL or leave the field empty to prevent his loading.
 - modalconsole_jsUrl - Enter javascript file URL or leave the field empty to prevent his loading.
 
-A [small video]() for clarity.
+A [small video](https://youtu.be/NRbc8OR__BY) for clarity.
