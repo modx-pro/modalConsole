@@ -15,6 +15,9 @@ Ext.extend(modalConsole, Ext.Component, {
 				xtype: 'modalconsole-window',
 				url: this.config.connector_url
 			});
+			if (this.window.getHeight() < 200) {
+				this.window.setHeight(document.body.clientHeight-55);
+			}
 			this.window.el.setRight(-this.window.getWidth()).setTop(55).setVisible(true, false);
 		}
 
@@ -405,11 +408,9 @@ Ext.extend(modalConsoleWindow, MODx.Window, {
 		let state = Ext.util.Cookies.get('modalconsoleSaveCode');
 		if (state === null) {
 			state = !!modalConsole.config.limit;
-			Ext.util.Cookies.set('modalconsoleSaveCode', state);
-		} else {
-			state = +state;
+			Ext.util.Cookies.set('modalconsoleSaveCode', +state);
 		}
-		return !!state;
+		return +state;
 	},
 	openFile: function () {},
 	saveFile: function () {},
