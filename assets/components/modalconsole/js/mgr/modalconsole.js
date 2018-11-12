@@ -188,7 +188,11 @@ let modalConsoleWindow = function (config) {
 						fn: function(el){
 							el.getUpdater().on('update',function(result, response){
 								var rObject = JSON.parse(response.responseText);
-								el.update(rObject.output);
+								if (rObject.success) {
+									el.update(rObject.output);
+								} else {
+									MODx.msg.alert(_('error'), rObject.message, Ext.emptyFn);
+								}
 								// Если код новый
 								if (rObject.keys > modalConsole.keys) {
 									Ext.getCmp('modalconsole-history-next').disable();
@@ -371,12 +375,17 @@ Ext.extend(modalConsoleWindow, MODx.Window, {
 							modalConsole.current = 0;
 							// this.editor.setValue("<?php\n");
 						} else {
-							this.resultPanel.update(response.message);
+							MODx.msg.alert(_('error'), response.message, Ext.emptyFn);
+							// this.resultPanel.update(response.message);
 						}
 					},
 					scope: this
 				},
-				failure: function(response) {console.log(response);}
+				failure: {
+					fn: function (response) {
+						MODx.msg.alert(_('error'), response.message, Ext.emptyFn);
+					}
+				}
 			}
 		});
 	},

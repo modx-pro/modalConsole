@@ -19,6 +19,11 @@ class modalConsoleExecProcessor extends modalConsoleProcessor
 
         ob_start();
         $this->snapshot('before');
+        /*try {
+            $result = eval($this->code);
+        } catch (ParseError $e) {
+            return $this->response(false, $e->getMessage());
+        }*/
         $result = eval($this->code);
         $this->snapshot('after');
         $output = ob_get_contents();
@@ -26,23 +31,16 @@ class modalConsoleExecProcessor extends modalConsoleProcessor
 
         if ($result === false) {
             return $this->response(false, error_get_last());
+        } elseif (!empty($result)) {
+            $output = $result;
         }
 
-        $this->saveHistory();
+        if ($this->getProperty('save', false)) {
+
+            $this->history->addItem(md5($this->code), $this->code)->save();
+        }
 
         return $this->response(true, '', array_merge(['output' => $output, 'keys' => $this->history->getKeys()], ['profile' => $this->prepareResult()]));
-    }
-
-    public function saveHistory()
-    {
-        if ($this->getProperty('save', false) && $this->limit > 0 && !empty($this->code)) {
-            $this->history->addItem(md5($this->code), $this->code);
-            $options = array(
-                xPDO::OPT_CACHE_KEY => $this->getUserFolder('modal_console/'),
-            );
-            $items = $this->history->getItems();
-            $this->modx->getCacheManager()->set('history', $items, 0, $options);
-        }
     }
 
     public function snapshot($key)
