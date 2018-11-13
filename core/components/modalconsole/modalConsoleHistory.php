@@ -16,7 +16,7 @@ class modalConsoleHistory
     public function __construct($cacheManager, array $config)
     {
         $this->cacheManager = $cacheManager;
-        $this->cachePath = $config['cachePath'];
+        $this->cachePath = $config['cachePath'] . $config['userFolder'];
         $this->userFolder = $config['userFolder'];
         $this->limit = $config['limit'];
         $this->load();
@@ -24,7 +24,7 @@ class modalConsoleHistory
 
     public function load()
     {
-        $file = $this->cachePath . $this->userFolder .  'history.cache.php';
+        $file = $this->cachePath . 'history.cache.php';
         if (is_file($file)) {
             $this->items = include $file;
         }

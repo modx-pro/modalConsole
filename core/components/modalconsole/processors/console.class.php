@@ -24,9 +24,10 @@ abstract class modalConsoleProcessor extends modProcessor
         $this->code = trim($this->code);
         $this->limit = $this->getProperty('limit', $this->modx->getOption('modalconsole_history_limit', null, 20));
         $this->cachePath = $this->modx->getOption('modalconsole_core_path', NULL, $this->modx->getOption('core_path') . 'cache/');
-        if (!class_exists('modalConsoleHistoryRepository')) {
-            $this->modx->log(1, 'Class "modalConsoleHistoryRepository" is not found!');
-            return 'Class "modalConsoleHistoryRepository" is not found!';
+        if (!class_exists('modalConsoleHistory')) {
+            $errormsg = 'Class "modalConsoleHistory" is not found!';
+            $this->modx->log(1, $errormsg);
+            return $errormsg;
         }
         $this->history = new modalConsoleHistory($this->modx->getCacheManager(), ['cachePath' => $this->cachePath, 'userFolder' => $this->getUserFolder('modal_console/'), 'limit'=> $this->limit]);
 

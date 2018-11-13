@@ -186,8 +186,14 @@ let modalConsoleWindow = function (config) {
 				listeners:{
 					"render": {
 						fn: function(el){
-							el.getUpdater().on('update',function(result, response){
-								var rObject = JSON.parse(response.responseText);
+							el.getUpdater().on('update',function(result, response) {
+								try {
+									var rObject = JSON.parse(response.responseText);
+								} catch (Error) {
+									el.update(response.responseText);
+									console.warn(Error.message);
+									return;
+								}
 								if (rObject.success) {
 									el.update(rObject.output);
 								} else {
