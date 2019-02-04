@@ -75,12 +75,13 @@
 }
 .modalconsole-exec-btn button{
 	width: 200px;
-
 }
-#modalconsole-save-code + .x-form-cb-label::before {
-	top: -8px;
-	left: -20px;
+#modalconsole-save-code + .x-form-cb-label::before,
+#modalconsole-format-code + .x-form-cb-label::before {
+	position: static;
 }
-#modalconsole-save-code + .x-form-cb-label {
-	margin-left: 35px;
+#modalconsole-save-code + .x-form-cb-label,
+#modalconsole-format-code + .x-form-cb-label {
+	margin-left: 20px;
+	font-size: 12px;
 }

@@ -7,8 +7,6 @@ class modalConsoleHistory
     /** @var array */
     public $items = [];
     /** @var string */
-    protected $cachePath;
-    /** @var string */
     protected $userFolder;
     /** @var integer */
     protected $limit;
@@ -16,18 +14,16 @@ class modalConsoleHistory
     public function __construct($cacheManager, array $config)
     {
         $this->cacheManager = $cacheManager;
-        $this->cachePath = $config['cachePath'] . $config['userFolder'];
         $this->userFolder = $config['userFolder'];
         $this->limit = $config['limit'];
-        $this->load();
+        $this->loadHistory();
     }
 
-    public function load()
+    public function loadHistory()
     {
-        $file = $this->cachePath . 'history.cache.php';
-        if (is_file($file)) {
-            $this->items = include $file;
-        }
+        $this->items = $this->cacheManager->get('history', array(xPDO::OPT_CACHE_KEY => $this->userFolder));
+        $this->items = is_null($this->items) ? [] : $this->items;
+
         return $this;
     }
 
@@ -63,7 +59,6 @@ class modalConsoleHistory
     public function hasItem($key)
     {
         return isset($this->items[$key]);
-
     }
 
     public function getLastItem($default = '')
@@ -111,11 +106,6 @@ class modalConsoleHistory
     public function getUserFolder()
     {
         return $this->userFolder;
-    }
-
-    public function getCachePath()
-    {
-        return $this->cachePath;
     }
 
     public function getCacheManager()

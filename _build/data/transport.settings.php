@@ -18,6 +18,16 @@ $tmp = array(
 		'value' => '{assets_url}components/modalconsole/js/mgr/modalconsole.js',
 		'area' => 'modalconsole_main',
 	),
+    'enable' => array(
+        'xtype' => 'combo-boolean',
+        'value' => true,
+        'area' => 'modalconsole_main',
+    ),
+    'files_path' => array(
+        'xtype' => 'textfield',
+        'value' => '{core_path}components/modalconsole/files/',
+        'area' => 'modalconsole_main',
+    ),
 );
 
 foreach ($tmp as $k => $v) {

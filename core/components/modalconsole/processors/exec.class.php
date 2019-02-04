@@ -1,9 +1,9 @@
 <?php
 require_once __DIR__ . '/console.class.php';
+require_once __DIR__ . '/../functions/function.php';
 
 class modalConsoleExecProcessor extends modalConsoleProcessor
 {
-    public $code;
     protected $queries = [];
     protected $queryTime = [];
     protected $memory = [];
@@ -12,10 +12,8 @@ class modalConsoleExecProcessor extends modalConsoleProcessor
 
     public function process()
     {
-        $this->code = preg_replace('/^\s*<\?(php)?\s*/mi', '', $this->getProperty('code', ''));
         error_reporting(E_ALL);
         ini_set("display_errors", true);
-        $modx = $this->modx;
 
         ob_start();
         $this->snapshot('before');
@@ -24,19 +22,17 @@ class modalConsoleExecProcessor extends modalConsoleProcessor
         } catch (ParseError $e) {
             return $this->response(false, $e->getMessage());
         }*/
-        $result = eval($this->code);
+        $result = modalConsoleEval($this->modx, $this->code);
         $this->snapshot('after');
         $output = ob_get_contents();
         ob_end_clean();
-
         if ($result === false) {
             return $this->response(false, error_get_last());
-        } elseif (!empty($result)) {
-            $output = $result;
+        } elseif (!empty($result) && is_string($result)) {
+            $output .= $result;
         }
 
         if ($this->getProperty('save', false)) {
-
             $this->history->addItem(md5($this->code), $this->code)->save();
         }
 

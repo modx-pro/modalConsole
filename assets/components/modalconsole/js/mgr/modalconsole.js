@@ -4,16 +4,20 @@ let modalConsole = function (config) {
 };
 Ext.extend(modalConsole, Ext.Component, {
 	window: null,
+	dialog: {},
+	combo: {},
 	label: null,
 	config: {},
 	keys: [],
 	current: 0,
+	result: '',
+	fileName: '',
 	init: false,
 	toggle: function(){
 		if (!this.window) {
 			this.window = MODx.load({
 				xtype: 'modalconsole-window',
-				url: this.config.connector_url
+				url: this.config.connectorUrl
 			});
 			if (this.window.getHeight() < 200) {
 				this.window.setHeight(document.body.clientHeight-55);
@@ -60,10 +64,11 @@ let modalConsoleWindow = function (config) {
 			text: '<i class="icon icon-folder-open-o"></i>',
 			tooltipType: 'title',
 			tooltip: _('modalconsole_btn_open'),
-			disabled: true,
+			disabled: false,
 			handler: function () {
 				this.openFile();
 			},
+			scope: this
 		}, {
 			xtype: 'button',
 			cls: 'toolbar-btn',
@@ -71,10 +76,11 @@ let modalConsoleWindow = function (config) {
 			text: '<i class="icon icon-save"></i>',
 			tooltipType: 'title',
 			tooltip: _('modalconsole_btn_save'),
-			disabled: true,
+			disabled: false,
 			handler: function () {
 				this.saveFile();
 			},
+			scope: this
 		}, {
 			xtype: 'button',
 			cls: 'toolbar-btn',
@@ -96,7 +102,7 @@ let modalConsoleWindow = function (config) {
 			text: '<i class="icon icon-columns"></i>',
 			tooltipType: 'title',
 			tooltip: _('modalconsole_btn_collapse'),
-			handler: function () {this.collapsePanel();},
+			handler: function() {this.collapsePanel();},
 			scope: this
 		}, {
 			xtype: 'tbspacer',
@@ -108,7 +114,7 @@ let modalConsoleWindow = function (config) {
 			text: '<i class="icon icon-arrow-left"></i>',
 			tooltipType: 'title',
 			tooltip: _('modalconsole_btn_history_prev'),
-			handler: function () {this.historyPrev();},
+			handler: function() {this.historyPrev();},
 			disabled: true,
 			scope: this
 		}, {
@@ -119,7 +125,7 @@ let modalConsoleWindow = function (config) {
 			tooltipType: 'title',
 			tooltip: _('modalconsole_btn_history_next'),
 			disabled: true,
-			handler: function () {this.historyNext();},
+			handler: function() {this.historyNext();},
 			scope: this
 		}, {
 			xtype: 'button',
@@ -129,7 +135,7 @@ let modalConsoleWindow = function (config) {
 			tooltipType: 'title',
 			tooltip: _('modalconsole_btn_history_clear'),
 			disabled: !!modalConsole.keys.length,
-			handler: function () {this.clearHistory();},
+			handler: function() {this.clearHistory();},
 			scope: this
 		}, {
 			xtype: 'xcheckbox',
@@ -138,7 +144,26 @@ let modalConsoleWindow = function (config) {
 			cls: 'toolbar-checkbox',
 			id: 'modalconsole-save-code',
 			disabled: !modalConsole.config.limit,
-			checked: this.saveCodeState()
+			checked: this.initSaveCodeState(),
+			listeners: {
+				check: function(o, value) {
+					this.setSaveCodeState(value);
+				},
+				scope: this
+			}
+		}, '->', {
+			xtype: 'xcheckbox',
+			boxLabel: _('modalconsole_format_code'),
+			cls: 'toolbar-checkbox',
+			id: 'modalconsole-format-code',
+			checked: this.initFormatCodeState(),
+			listeners: {
+				check: function(o, value) {
+					this.resultPanel.update(this.formatCode(modalConsole.result));
+					this.setFormatCodeState(value);
+				},
+				scope: this
+			}
 		}],
 		items: [{
 			xtype: 'panel',
@@ -165,8 +190,10 @@ let modalConsoleWindow = function (config) {
 					enableKeyEvents: true,
 					listeners: {
 						keydown: function(editor, e) {
-							if (e && e.ctrlKey && e.keyCode == e.ENTER) {
+							if (e.ctrlKey && Ext.EventObject.getKey() == Ext.EventObject.ENTER) {
 								this.execute();
+							} else if (Ext.EventObject.getKey() == Ext.EventObject.ESC) {
+								modalConsole.toggle();
 							}
 						},
 						scope: this
@@ -195,7 +222,9 @@ let modalConsoleWindow = function (config) {
 									return;
 								}
 								if (rObject.success) {
-									el.update(rObject.output);
+									modalConsole.result = rObject.output;
+									const output = this.formatCode(modalConsole.result);
+									el.update(output);
 								} else {
 									MODx.msg.alert(_('error'), rObject.message, Ext.emptyFn);
 								}
@@ -265,7 +294,7 @@ let modalConsoleWindow = function (config) {
 			},
 			scope: this
 		}],
-		onEsc: modalConsole.toggle,
+		// onEsc: modalConsole.toggle,
 		listeners: {
 			'maximize': function (w) {
 				w.el.setTop(55);
@@ -347,6 +376,7 @@ Ext.extend(modalConsoleWindow, MODx.Window, {
 	clearContent: function(){
 		this.editor.setValue('<?php\n');
 		this.resultPanel.update('');
+		modalConsole.result = '';
 	},
 	historyPrev: function(){
 		Ext.getCmp('modalconsole-history-next').enable();
@@ -395,11 +425,12 @@ Ext.extend(modalConsoleWindow, MODx.Window, {
 			}
 		});
 	},
-	execute: function(){
+	getCode: function() {
+		return this.editor.getValue().trim();
+	},
+	execute: function() {
 		//this.resultPanel.el.mask(_('working'));
-		let state = +Ext.getCmp('modalconsole-save-code').checked;
-		Ext.util.Cookies.set('modalconsoleSaveCode', state);
-		let code = this.editor.getValue().replace(/^\s*<\?(php)?\s*/mi, '').trim();
+		const code = this.getCode();
 		if (code) {
 			let updater = this.resultPanel.getUpdater();
 			updater.timeout = 0;
@@ -408,7 +439,7 @@ Ext.extend(modalConsoleWindow, MODx.Window, {
 				params:{
 					action: 'exec',
 					code: code,
-					save: state
+					save: +this.getSaveCodeState()
 				}
 			});
 		}
@@ -419,17 +450,93 @@ Ext.extend(modalConsoleWindow, MODx.Window, {
 			pItem.parseData(result.profile[key]).update(pItem.html);
 		}
 	},
-	saveCodeState: function() {
+	initSaveCodeState: function() {
 		let state = Ext.util.Cookies.get('modalconsoleSaveCode');
 		if (state === null) {
-			state = !!modalConsole.config.limit;
-			Ext.util.Cookies.set('modalconsoleSaveCode', +state);
+			// state = !!modalConsole.config.limit;
+			// Ext.util.Cookies.set('modalconsoleSaveCode', +state);
+			state = this.setSaveCodeState(!!modalConsole.config.limit);
 		}
 		return +state;
 	},
-	openFile: function () {},
-	saveFile: function () {},
-
+	getSaveCodeState: function() {
+		return Ext.getCmp('modalconsole-save-code').checked;
+	},
+	setSaveCodeState: function(state) {
+		Ext.util.Cookies.set('modalconsoleSaveCode', +state);
+		return state;
+	},
+	initFormatCodeState: function() {
+		let state = Ext.util.Cookies.get('modalconsoleFormatCode');
+		if (state === null) {
+			state = this.setFormatCodeState(true);
+		}
+		return +state;
+	},
+	getFormatCodeState: function() {
+		return Ext.getCmp('modalconsole-format-code').checked;
+	},
+	setFormatCodeState: function(state) {
+		Ext.util.Cookies.set('modalconsoleFormatCode', +state);
+		return state;
+	},
+	formatCode: function (output) {
+		return this.getFormatCodeState() ? '<pre>' + output + '</pre>' : output;
+	},
+	openFile: function() {
+		if (this.dialog) this.dialog.destroy();
+		this.dialog = MODx.load({
+			xtype: 'modalconsole-openfile-dialog',
+			// id: Ext.id(),
+			listeners: {
+				success: {
+					fn: function (response) {
+						if (response.a.result.success) {
+							const code = response.a.result.message ? response.a.result.message : '<?php\n';
+							this.editor.setValue(code);
+						}
+					}, scope: this
+				},
+				failure: {
+					fn: function(r){}, scope: this
+				}
+			}
+		});
+		this.dialog.show(Ext.EventObject.target);
+	},
+	saveFile: function() {
+		Ext.MessageBox.prompt(_('save'), _('modalconsole_enter_filename'), function(res, input) {
+			if (res == 'ok') {
+				MODx.Ajax.request({
+					url: modalConsole.config.connectorUrl,
+					params: {
+						action: 'savefile',
+						code: this.getCode(),
+						filename: input
+					},
+					listeners: {
+						success: {
+							fn: function (response) {
+								if (response.success) {
+									// alert('OK');
+console.log(response);
+									modalConsole.fileName = response.filename;
+								} else {
+									MODx.msg.alert(_('error'), response.message, Ext.emptyFn);
+								}
+							},
+							scope: this
+						},
+						failure: {
+							fn: function (response) {
+								MODx.msg.alert(_('error'), response.message, Ext.emptyFn);
+							}
+						}
+					}
+				});
+			}
+		}, this, false, modalConsole.fileName || '');
+	}
 });
 
 Ext.reg('modalconsole-window', modalConsoleWindow);
@@ -465,6 +572,95 @@ Ext.extend(modalConsole.label, Ext.form.Label, {
 	}
 });
 Ext.reg('modalConsole-profile-label', modalConsole.label);
+
+// Open File Dialog
+modalConsole.dialog.OpenFile = function (config) {
+	config = config || {};
+	if (!config.id) {
+		config.id = 'modalconsole-openfile-dialog';
+	}
+	Ext.applyIf(config, {
+		title: _('modalconsole_file'),
+		width: 400,
+		modal: true,
+		url: modalConsole.config.connectorUrl,
+		action: 'loadfile',
+		fields: [{
+			xtype: 'modalconsole-combo-files',
+			name: 'file',
+			emptyText: _('modalconsole_select_file'),
+			anchor: '100%'
+		}],
+		keys: [{
+			key: Ext.EventObject.ENTER, shift: true, fn: function () {
+				let fileName = Ext.getCmp('modalconsole-combo-files').getValue();
+				modalConsole.fileName = fileName.replace(/\.php$/i, '');
+				this.submit()
+			}, scope: this
+		}],
+		buttons: [{
+			text: _('modalconsole_btn_open'),
+			id: config.id + '-load-btn',
+			handler: function () {
+				let fileName = Ext.getCmp('modalconsole-combo-files').getValue();
+				modalConsole.fileName = fileName.replace(/\.php$/i, '');
+				this.submit();
+			},
+			scope: this
+		}, {
+			text: _('close'),
+			id: config.id + '-close-btn',
+			handler: function () {
+				this.hide();
+			},
+			scope: this
+		}]
+	});
+	modalConsole.dialog.OpenFile.superclass.constructor.call(this, config);
+};
+Ext.extend(modalConsole.dialog.OpenFile, MODx.Window);
+Ext.reg('modalconsole-openfile-dialog', modalConsole.dialog.OpenFile);
+
+modalConsole.combo.Files = function(config) {
+	config = config || {};
+	Ext.applyIf(config,{
+		id: 'modalconsole-combo-files',
+		hideMode: 'offsets',
+		autoScroll: true,
+		maxHeight: 200,
+		displayField: 'filename',
+		valueField: 'filename',
+		fields: ['filename'],
+		hiddenName: 'file',
+		editable: false,
+		url: modalConsole.config.connectorUrl,
+		baseParams: {
+			action: 'getfiles'
+		},
+		store: new Ext.data.JsonStore({
+			url: modalConsole.config.connectorUrl,
+			root: 'results',
+			totalProperty: 'total',
+			fields: ['filename'],
+			errorReader: MODx.util.JSONReader,
+			baseParams: {
+				action: 'getfiles'
+			},
+			remoteSort: config.remoteSort || false,
+			autoDestroy: true,
+			listeners: {
+				'loadexception': {
+					fn: function(o, trans, resp) {
+						const status = JSON.parse(resp.responseText);
+						MODx.msg.alert(_('error'), status.message, Ext.emptyFn);
+					}}
+			}
+		})
+	});
+	modalConsole.combo.Files.superclass.constructor.call(this, config);
+};
+Ext.extend(modalConsole.combo.Files, MODx.combo.ComboBox);
+Ext.reg('modalconsole-combo-files', modalConsole.combo.Files);
 
 /** ***************************************************/
 Ext.onReady(function() {

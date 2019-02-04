@@ -15,7 +15,6 @@ $modx->lexicon->load('modalconsole:default');
 // handle request
 $corePath = $modx->getOption('modalconsole_core_path', null, $modx->getOption('core_path') . 'components/modalconsole/');
 $path = $corePath . 'processors/';
-
 /** @var modConnectorRequest $request */
 $modx->request->handleRequest(array(
 	'processors_path' => $path,

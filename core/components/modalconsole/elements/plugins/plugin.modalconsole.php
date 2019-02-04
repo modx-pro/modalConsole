@@ -1,9 +1,9 @@
 <?php
-if ($modx->context->key != 'mgr') return;
+if ($modx->context->key != 'mgr' || !$modx->getOption('modalconsole_enable', null, true)) return;
+
 switch ($modx->event->name) {
     case 'OnManagerPageBeforeRender':
         $assetsUrl = $modx->getOption('modalconsole_assets_url', null, $modx->getOption('assets_url') . 'components/modalconsole/');
-        /** @var modalConsole $modalConsole */
         if ($modx->hasPermission('console')) {
             $modx->controller->addLexiconTopic('modalconsole:default');
             $css = $modx->getOption('modalconsole_cssFile', null, $assetsUrl.'css/mgr/modalconsole.css');

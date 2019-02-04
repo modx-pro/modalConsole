@@ -1,3 +1,14 @@
+1.1.0-beta
+==============
+- Added the ability to save the code to file.
+- Added a checkbox to format the result.
+- Added a system setting for disabling the console.
+
+1.0.1-beta
+==============
+- Add "Ecs" hotkey to close the console.
+- Some css corrections.
+
 1.0.0-beta
 ==============
 - Initial release.

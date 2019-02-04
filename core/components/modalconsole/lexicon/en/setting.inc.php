@@ -8,3 +8,7 @@ $_lang['setting_modalconsole_cssUrl'] = 'Css file';
 $_lang['setting_modalconsole_cssUrl_desc'] = 'Enter css file URL or leave the field empty to prevent his loading.';
 $_lang['setting_modalconsole_jsUrl'] = 'Javascript file';
 $_lang['setting_modalconsole_jsUrl_desc'] = 'Enter javascript file URL or leave the field empty to prevent his loading.';
+$_lang['setting_modalconsole_enable'] = 'Enable the console';
+$_lang['setting_modalconsole_enable_desc'] = 'Enable the console.';
+$_lang['setting_modalconsole_files_path'] = 'Path to save files';
+$_lang['setting_modalconsole_files_path_desc'] = 'Path to save files.';
