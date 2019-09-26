@@ -22,16 +22,15 @@ Ext.extend(modalConsole, Ext.Component, {
 			if (this.window.getHeight() < 200) {
 				this.window.setHeight(document.body.clientHeight-55);
 			}
-			this.window.el.setRight(-this.window.getWidth()).setTop(55).setVisible(true, false);
+			this.window.el.setTop(-this.window.getHeight()).setVisible(true, false);
 		}
-
 		if (!this.window.isVisible) {
 			this.window.isVisible = true;
-			this.window.el.addClass('visible').setOpacity(1, {duration: .7, easing: 'easeIn'})
+			this.window.el.addClass('visible').setOpacity(1, {duration: .7, easing: 'easeIn'});
 			// this.window.editor.getEl().focus(1000);
 		} else {
 			this.window.isVisible = false;
-			this.window.el.removeClass('visible').setOpacity(0.5, {duration: .7, easing: 'easeIn'}).setRight(-this.window.getWidth());
+			this.window.el.removeClass('visible').setOpacity(0.5, {duration: .7, easing: 'easeIn'}).setTop(-this.window.getHeight());
 		}
 	},
 
@@ -45,8 +44,8 @@ let modalConsoleWindow = function (config) {
 	config = config || {};
 
 	Ext.applyIf(config, {
-		renderTo: 'modx-body-tag',
-		// renderTo: 'modx-content',
+		// renderTo: 'modx-body-tag',
+		renderTo: 'modx-container',
 		title: _('modalconsole'),
 		id: 'modalconsole-window',
 		width: 950,
@@ -153,13 +152,13 @@ let modalConsoleWindow = function (config) {
 			}
 		}, '->', {
 			xtype: 'xcheckbox',
-			boxLabel: _('modalconsole_format_code'),
+			boxLabel: _('modalconsole_format_result'),
 			cls: 'toolbar-checkbox',
-			id: 'modalconsole-format-code',
+			id: 'modalconsole-format-result',
 			checked: this.initFormatCodeState(),
 			listeners: {
 				check: function(o, value) {
-					this.resultPanel.update(this.formatCode(modalConsole.result));
+					this.resultPanel.update(this.formatResult(modalConsole.result));
 					this.setFormatCodeState(value);
 				},
 				scope: this
@@ -212,7 +211,7 @@ let modalConsoleWindow = function (config) {
 				bodyStyle: 'background-color:#fafafa;',
 				listeners:{
 					"render": {
-						fn: function(el){
+						fn: function(el) {
 							el.getUpdater().on('update',function(result, response) {
 								try {
 									var rObject = JSON.parse(response.responseText);
@@ -223,7 +222,7 @@ let modalConsoleWindow = function (config) {
 								}
 								if (rObject.success) {
 									modalConsole.result = rObject.output;
-									const output = this.formatCode(modalConsole.result);
+									const output = this.formatResult(modalConsole.result);
 									el.update(output);
 								} else {
 									MODx.msg.alert(_('error'), rObject.message, Ext.emptyFn);
@@ -474,13 +473,13 @@ Ext.extend(modalConsoleWindow, MODx.Window, {
 		return +state;
 	},
 	getFormatCodeState: function() {
-		return Ext.getCmp('modalconsole-format-code').checked;
+		return Ext.getCmp('modalconsole-format-result').checked;
 	},
 	setFormatCodeState: function(state) {
-		Ext.util.Cookies.set('modalconsoleFormatCode', +state);
+		Ext.util.Cookies.set('modalconsoleFormatResult', +state);
 		return state;
 	},
-	formatCode: function (output) {
+	formatResult: function (output) {
 		return this.getFormatCodeState() ? '<pre>' + output + '</pre>' : output;
 	},
 	openFile: function() {

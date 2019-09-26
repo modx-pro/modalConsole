@@ -1,15 +1,16 @@
 #modalconsole-window {
 	left: auto !important;
-	top: 55px !important;
-	-webkit-transition: right 0.7s ease-out 0s;
-	-moz-transition: right 0.7s ease-out 0s;
-	-o-transition: right 0.7s ease-out 0s;
-	transition: right 0.7s ease-out 0s;
+	right: 0 !important;
+	-webkit-transition: top 0.7s ease-out 0s;
+	-moz-transition: top 0.7s ease-out 0s;
+	-o-transition: top 0.7s ease-out 0s;
+	transition: top 0.7s ease-out 0s;
 	opacity: 0.5;
+	position: absolute;
 	z-index: 18 !important;
 }
 #modalconsole-window.visible {
-	right: 0 !important;
+	top: 55px !important;
 }
 #modalconsole-window .x-window-body {
 	padding: 0;
@@ -77,11 +78,11 @@
 	width: 200px;
 }
 #modalconsole-save-code + .x-form-cb-label::before,
-#modalconsole-format-code + .x-form-cb-label::before {
+#modalconsole-format-result + .x-form-cb-label::before {
 	position: static;
 }
 #modalconsole-save-code + .x-form-cb-label,
-#modalconsole-format-code + .x-form-cb-label {
+#modalconsole-format-result + .x-form-cb-label {
 	margin-left: 20px;
 	font-size: 12px;
 }

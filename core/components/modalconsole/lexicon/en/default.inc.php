@@ -8,9 +8,10 @@ $_lang['modalconsole_btn_history_prev'] = 'Previous';
 $_lang['modalconsole_btn_history_next'] = 'Next';
 $_lang['modalconsole_btn_history_clear'] = 'Clear the history';
 $_lang['modalconsole_btn_execute'] = 'Execute';
-$_lang['modalconsole_save_code'] = 'Save the code';
+$_lang['modalconsole_save_code'] = 'Remember';
 $_lang['modalconsole_title_save_code'] = 'Save the code in the history';
-$_lang['modalconsole_format_code'] = 'Format the code';
+$_lang['modalconsole_format_result'] = 'Format';
+$_lang['modalconsole_search_text'] = 'Name of php function';
 
 $_lang['modalconsole_file'] = 'File';
 $_lang['modalconsole_select_file'] = 'Select file';

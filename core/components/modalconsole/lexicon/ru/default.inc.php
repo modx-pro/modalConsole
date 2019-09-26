@@ -9,9 +9,10 @@ $_lang['modalconsole_btn_history_prev'] = 'Предыдущий код';
 $_lang['modalconsole_btn_history_next'] = 'Следующий код';
 $_lang['modalconsole_btn_history_clear'] = 'Очистить историю';
 $_lang['modalconsole_btn_execute'] = 'Выполнить';
-$_lang['modalconsole_save_code'] = 'Сохранить код';
+$_lang['modalconsole_save_code'] = 'Запомнить';
 $_lang['modalconsole_title_save_code'] = 'Сохранить код в истории';
-$_lang['modalconsole_format_code'] = 'Форматировать';
+$_lang['modalconsole_format_result'] = 'Форматировать';
+$_lang['modalconsole_search_text'] = 'Введите имя PHP функции';
 
 
 $_lang['modalconsole_file'] = 'Файл';
