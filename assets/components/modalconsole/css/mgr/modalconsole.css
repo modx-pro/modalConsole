@@ -12,6 +12,9 @@
 #modalconsole-window.visible {
 	top: 55px !important;
 }
+#modalconsole-window.x-window-maximized {
+	padding-bottom: 55px !important;
+}
 #modalconsole-window .x-window-body {
 	padding: 0;
 	overflow: hidden;
