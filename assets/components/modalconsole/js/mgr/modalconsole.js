@@ -48,6 +48,7 @@ let modalConsoleWindow = function (config) {
 		renderTo: 'modx-container',
 		title: _('modalconsole'),
 		id: 'modalconsole-window',
+		cls: (MODx.config.modalconsole_position ? Ext.util.Format.htmlEncode(MODx.config.modalconsole_position) : 'right'),
 		width: 950,
 		minHeight: 200,
 		minWidth: 300,
