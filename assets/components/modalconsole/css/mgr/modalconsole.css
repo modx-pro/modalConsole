@@ -1,6 +1,4 @@
 #modalconsole-window {
-	left: auto !important;
-	right: 0 !important;
 	-webkit-transition: top 0.7s ease-out 0s;
 	-moz-transition: top 0.7s ease-out 0s;
 	-o-transition: top 0.7s ease-out 0s;
@@ -8,6 +6,14 @@
 	opacity: 0.5;
 	position: absolute;
 	z-index: 18 !important;
+}
+#modalconsole-window.left {
+	left: 0 !important;
+	right: auto !important;
+}
+#modalconsole-window.right {
+	right: 0 !important;
+	left: auto !important;
 }
 #modalconsole-window.visible {
 	top: 55px !important;
