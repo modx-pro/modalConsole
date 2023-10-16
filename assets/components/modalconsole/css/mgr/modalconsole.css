@@ -26,16 +26,14 @@
 #modalconsole-window .x-window-header .x-tool {
 	color: #fff;
 }
-#modalconsole-link {
-	padding: 0 !important;
-	margin: 0 20px !important;
-}
-#modalconsole-link i {
+#modalconsole-link > span {
+	display: inline-flex;
 	border-top: 3px solid;
 	outline: 1px solid #fff;
-	padding: 0 3px;
+	padding: 0px 4px;
 	position: relative;
 	top: 2px;
+	font-size: 2px;
 }
 #modalconsole-window .x-toolbar-cell {
 	position: relative;
@@ -82,10 +80,13 @@
 }
 #modalconsole-save-code + .x-form-cb-label::before,
 #modalconsole-format-result + .x-form-cb-label::before {
-	position: static;
+	line-height: 1;
 }
 #modalconsole-save-code + .x-form-cb-label,
 #modalconsole-format-result + .x-form-cb-label {
+	padding-left: 18px;
+	height: 18px;
+	display: flex;
+	align-items: center;
 	margin-left: 20px;
-	font-size: 12px;
 }
