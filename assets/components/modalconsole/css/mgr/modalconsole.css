@@ -35,6 +35,9 @@
 	top: 2px;
 	font-size: 2px;
 }
+#modalconsole-link i {
+	font-size: 14px;
+}
 #modalconsole-window .x-toolbar-cell {
 	position: relative;
 }
