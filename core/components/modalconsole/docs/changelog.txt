@@ -1,3 +1,7 @@
+1.1.3-pl
+==============
+- Design adapted for MODX3
+
 1.1.2-beta
 ==============
 - Fixed bug with maximized window (#2).
