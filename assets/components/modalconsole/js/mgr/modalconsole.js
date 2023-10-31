@@ -669,6 +669,6 @@ Ext.onReady(function() {
 		title = _('modalconsole_open_console');
 
 	modalconsoleLi.id = "modalconsole-li";
-	modalconsoleLi.innerHTML = "<a id=\"modalconsole-link\" class=\"modalconsole\" href=\"javascript:;\" onclick=\"modalConsole.toggle()\" title=\""+ title +"\"><i class=\"icon icon-terminal\"></i></a>";
+	modalconsoleLi.innerHTML = "<a id=\"modalconsole-link\" class=\"modalconsole\" href=\"javascript:;\" onclick=\"modalConsole.toggle()\" title=\""+ title +"\"><span><i class=\"icon icon-terminal\"></i></span></a>";
 	usermenuUl.insertBefore(modalconsoleLi, firstLi);
 });
